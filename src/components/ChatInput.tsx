@@ -72,7 +72,6 @@ const ChatInput: React.FC = () => {
     }
     
     // For demo purposes, just create a local URL
-    // In a real app, you'd upload to a server and get a URL back
     const localUrl = URL.createObjectURL(file);
     setImage(file);
     setImageUrl(localUrl);

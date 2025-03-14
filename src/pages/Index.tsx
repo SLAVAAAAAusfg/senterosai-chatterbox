@@ -13,7 +13,7 @@ import SettingsDialog from '@/components/SettingsDialog';
 
 const Index = () => {
   const { currentSession, createNewSession, clearMessages, regenerateResponse } = useChat();
-  const { language } = useSettings();
+  const { language, isSidebarOpen, setSidebarOpen } = useSettings();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -41,6 +41,8 @@ const Index = () => {
       <ChatHistory />
       
       <main className="flex-1 flex flex-col min-h-screen pt-16">
+        <Header />
+        
         {/* Messages container */}
         <div className="flex-1 overflow-y-auto">
           {currentSession.messages.length > 0 ? (
