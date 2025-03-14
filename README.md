@@ -1,8 +1,47 @@
-# Welcome to your Lovable project
+
+# SenterosAI Chat Application
+
+This project is a full-stack chat application with a React frontend and Flask backend.
 
 ## Project info
 
 **URL**: https://lovable.dev/projects/d193c57e-e5bf-4638-a18a-a84865446015
+
+## Setup Instructions
+
+### Backend Setup (Python Flask)
+
+1. Make sure you have Python 3.7+ installed
+2. Install Flask and Flask-CORS:
+   ```bash
+   pip install Flask Flask-CORS
+   ```
+3. Run the Flask backend:
+   ```bash
+   python app.py
+   ```
+   This will start the backend server on http://localhost:5000
+
+### Frontend Setup (React)
+
+1. Make sure you have Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+2. Install dependencies:
+   ```sh
+   npm i
+   ```
+3. Start the development server:
+   ```sh
+   npm run dev
+   ```
+4. The frontend will be available at http://localhost:5173 and automatically proxy API requests to the Flask backend
+
+## Features
+
+- Chat with SenterosAI assistant
+- Image uploads
+- Chat history
+- Multiple language support
+- Dark/light theme options
 
 ## How can I edit this code?
 
@@ -18,24 +57,6 @@ Changes made via Lovable will be committed automatically to this repo.
 
 If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
 **Edit a file directly in GitHub**
 
 - Navigate to the desired file(s).
@@ -49,21 +70,3 @@ npm run dev
 - Select the "Codespaces" tab.
 - Click on "New codespace" to launch a new Codespace environment.
 - Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with .
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/d193c57e-e5bf-4638-a18a-a84865446015) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
