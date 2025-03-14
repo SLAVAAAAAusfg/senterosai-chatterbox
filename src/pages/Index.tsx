@@ -10,6 +10,7 @@ import ChatInput from '@/components/ChatInput';
 import ChatMessage from '@/components/ChatMessage';
 import ChatHistory from '@/components/ChatHistory';
 import SettingsDialog from '@/components/SettingsDialog';
+import UserMenu from '@/components/UserMenu';
 
 const Index = () => {
   const { currentSession, createNewSession, clearMessages, regenerateResponse } = useChat();
@@ -65,7 +66,11 @@ const Index = () => {
             <div className="flex flex-col items-center justify-center h-full px-4 text-center">
               <div className="glass p-6 rounded-2xl max-w-md mx-auto animation-float">
                 <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                  <MessagesSquare className="w-8 h-8" />
+                  <img 
+                    src="https://i.ibb.co/QFHLqXGM/logo-removebg-preview-1.png" 
+                    alt="SenterosAI Logo" 
+                    className="w-12 h-12" 
+                  />
                 </div>
                 <h2 className="text-2xl font-bold mb-2">SenterosAI</h2>
                 <p className="text-muted-foreground mb-6">

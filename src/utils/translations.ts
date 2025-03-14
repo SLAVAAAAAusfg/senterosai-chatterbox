@@ -1,4 +1,3 @@
-
 interface Translations {
   [key: string]: {
     [key: string]: string;
@@ -40,6 +39,17 @@ const translations: Translations = {
     rename: "Переименовать",
     on: "Вкл",
     off: "Выкл",
+    login: "Войти",
+    signup: "Регистрация",
+    email: "Электронная почта",
+    password: "Пароль",
+    username: "Имя пользователя",
+    optional: "необязательно",
+    loggingIn: "Вход...",
+    signingUp: "Регистрация...",
+    myAccount: "Мой аккаунт",
+    signOut: "Выйти",
+    welcomeMessage: "Добро пожаловать в SenterosAI, вашего умного помощника",
   },
   // English translations
   en: {
@@ -75,6 +85,17 @@ const translations: Translations = {
     rename: "Rename",
     on: "On",
     off: "Off",
+    login: "Login",
+    signup: "Sign Up",
+    email: "Email",
+    password: "Password",
+    username: "Username",
+    optional: "optional",
+    loggingIn: "Logging in...",
+    signingUp: "Signing up...",
+    myAccount: "My Account",
+    signOut: "Sign Out",
+    welcomeMessage: "Welcome to SenterosAI, your intelligent assistant",
   },
   // French translations
   fr: {

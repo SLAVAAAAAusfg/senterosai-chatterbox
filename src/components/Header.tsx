@@ -1,55 +1,71 @@
 
 import React from 'react';
-import { Menu, Moon, Settings, Sun, PanelLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { useSettings } from '@/contexts/SettingsContext';
-import { useChat } from '@/contexts/ChatContext';
 import { getTranslation } from '@/utils/translations';
+import { Button } from '@/components/ui/button';
+import { Menu, Plus, Settings } from 'lucide-react';
+import { useChat } from '@/contexts/ChatContext';
+import LanguageSelector from './LanguageSelector';
+import ThemeSelector from './ThemeSelector';
+import UserMenu from './UserMenu';
 
-const Header: React.FC = () => {
-  const { theme, setTheme, language, isSidebarOpen, setSidebarOpen } = useSettings();
-  const { currentSession } = useChat();
-  
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
-  
+const Header = () => {
+  const { isSidebarOpen, setSidebarOpen, language } = useSettings();
+  const { createNewSession } = useChat();
+
   return (
-    <header className="glass-dim z-10 fixed top-0 left-0 right-0 flex items-center justify-between h-16 px-4 border-b border-border/40">
+    <header className="fixed top-0 left-0 right-0 h-16 flex items-center justify-between px-4 bg-background border-b z-10">
       <div className="flex items-center">
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="mr-2 hover:bg-secondary"
-          onClick={() => setSidebarOpen(!isSidebarOpen)}
-        >
-          <PanelLeft className="h-5 w-5" />
-        </Button>
-        <h1 className="text-lg font-medium animate-fade-in">
-          {currentSession.title || getTranslation('newChat', language)}
-        </h1>
-      </div>
-      
-      <div className="flex items-center space-x-1">
         <Button
           variant="ghost"
           size="icon"
-          onClick={toggleTheme}
-          className="hover:bg-secondary"
+          className="mr-2 md:hidden"
+          onClick={() => setSidebarOpen(!isSidebarOpen)}
         >
-          {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          <Menu className="h-5 w-5" />
+          <span className="sr-only">Toggle sidebar</span>
+        </Button>
+        
+        <div className="flex items-center">
+          <img 
+            src="https://i.ibb.co/QFHLqXGM/logo-removebg-preview-1.png" 
+            alt="SenterosAI Logo" 
+            className="h-8 w-8 mr-2" 
+          />
+          <h1 className="text-lg font-bold hidden md:block">SenterosAI</h1>
+        </div>
+      </div>
+      
+      <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          className="hidden md:flex"
+          onClick={createNewSession}
+        >
+          <Plus className="mr-2 h-4 w-4" />
+          {getTranslation('newChat', language)}
         </Button>
         
         <Button
           variant="ghost"
           size="icon"
-          className="hover:bg-secondary"
-          asChild
+          className="md:hidden"
+          onClick={createNewSession}
         >
-          <a href="#settings">
-            <Settings className="h-5 w-5" />
-          </a>
+          <Plus className="h-5 w-5" />
+          <span className="sr-only">{getTranslation('newChat', language)}</span>
         </Button>
+        
+        <LanguageSelector />
+        <ThemeSelector />
+        <a href="#settings">
+          <Button variant="ghost" size="icon">
+            <Settings className="h-5 w-5" />
+            <span className="sr-only">{getTranslation('settings', language)}</span>
+          </Button>
+        </a>
+        <UserMenu />
       </div>
     </header>
   );
