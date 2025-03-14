@@ -1,17 +1,16 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useSettings } from '@/contexts/SettingsContext';
 import { getTranslation } from '@/utils/translations';
 import { Button } from '@/components/ui/button';
 import { Menu, Plus, Settings } from 'lucide-react';
 import { useChat } from '@/contexts/ChatContext';
-import LanguageSelector from './LanguageSelector';
-import ThemeSelector from './ThemeSelector';
 import UserMenu from './UserMenu';
 
 const Header = () => {
   const { isSidebarOpen, setSidebarOpen, language } = useSettings();
   const { createNewSession } = useChat();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   return (
     <header className="fixed top-0 left-0 right-0 h-16 flex items-center justify-between px-4 bg-background border-b z-10">
@@ -57,14 +56,14 @@ const Header = () => {
           <span className="sr-only">{getTranslation('newChat', language)}</span>
         </Button>
         
-        <LanguageSelector />
-        <ThemeSelector />
-        <a href="#settings">
-          <Button variant="ghost" size="icon">
-            <Settings className="h-5 w-5" />
-            <span className="sr-only">{getTranslation('settings', language)}</span>
-          </Button>
-        </a>
+        <Button 
+          variant="ghost" 
+          size="icon"
+          onClick={() => window.location.hash = '#settings'}
+        >
+          <Settings className="h-5 w-5" />
+          <span className="sr-only">{getTranslation('settings', language)}</span>
+        </Button>
         <UserMenu />
       </div>
     </header>
