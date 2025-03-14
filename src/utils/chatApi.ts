@@ -27,12 +27,13 @@ export const sendMessage = async (
   ];
   
   if (imageUrl) {
+    // Fix: Using the correct type format for messages with images
     messages.push({
       "role": "user",
       "content": [
         {"type": "text", "text": prompt},
         {"type": "image_url", "image_url": {"url": imageUrl}}
-      ]
+      ] as any // Use type assertion to bypass TypeScript error
     });
   } else {
     messages.push({

@@ -1,12 +1,13 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Loader2, Image as ImageIcon, X } from 'lucide-react';
+import { Send, Loader2, Image as ImageIcon, X, Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useChat } from '@/contexts/ChatContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { getTranslation } from '@/utils/translations';
 import { cn } from '@/lib/utils';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 const ChatInput: React.FC = () => {
   const [message, setMessage] = useState('');
@@ -14,7 +15,7 @@ const ChatInput: React.FC = () => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const { sendUserMessage } = useChat();
-  const { language, thinkingMode } = useSettings();
+  const { language, thinkingMode, setThinkingMode } = useSettings();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -56,6 +57,10 @@ const ChatInput: React.FC = () => {
 
   const handleImageClick = () => {
     fileInputRef.current?.click();
+  };
+
+  const toggleThinkingMode = () => {
+    setThinkingMode(!thinkingMode);
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -119,26 +124,50 @@ const ChatInput: React.FC = () => {
               rows={1}
             />
             <div className="absolute bottom-2 right-2 flex items-center space-x-1">
-              <Button 
-                type="button" 
-                size="icon" 
-                variant="ghost" 
-                className="h-8 w-8 rounded-full hover:bg-secondary" 
-                onClick={handleImageClick}
-                disabled={isUploading}
-              >
-                {isUploading ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                ) : (
-                  <ImageIcon className="h-5 w-5" />
-                )}
-              </Button>
-              <div className={cn(
-                "text-xs font-medium px-2 py-0.5 rounded-full transition-opacity",
-                thinkingMode ? "bg-primary/20 text-primary" : "opacity-0"
-              )}>
-                {thinkingMode ? getTranslation('thinking', language) : ''}
-              </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    type="button" 
+                    size="icon" 
+                    variant={thinkingMode ? "default" : "ghost"} 
+                    className={cn(
+                      "h-8 w-8 rounded-full", 
+                      thinkingMode ? "bg-primary/80 text-primary-foreground" : "hover:bg-secondary"
+                    )}
+                    onClick={toggleThinkingMode}
+                  >
+                    <Brain className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  {thinkingMode 
+                    ? getTranslation('thinkingMode', language) + ' ' + getTranslation('on', language)
+                    : getTranslation('thinkingMode', language) + ' ' + getTranslation('off', language)
+                  }
+                </TooltipContent>
+              </Tooltip>
+              
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    type="button" 
+                    size="icon" 
+                    variant="ghost" 
+                    className="h-8 w-8 rounded-full hover:bg-secondary" 
+                    onClick={handleImageClick}
+                    disabled={isUploading}
+                  >
+                    {isUploading ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      <ImageIcon className="h-5 w-5" />
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  {getTranslation('uploadImage', language)}
+                </TooltipContent>
+              </Tooltip>
             </div>
           </div>
           

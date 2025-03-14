@@ -206,7 +206,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ className }) => {
         </div>
       </aside>
       
-      {/* Mobile overlay */}
+      {/* Mobile overlay - clickable to close sidebar */}
       {isSidebarOpen && (
         <div 
           className="fixed inset-0 bg-black/30 z-10 md:hidden"

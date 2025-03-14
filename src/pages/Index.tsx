@@ -17,6 +17,11 @@ const Index = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Auto scroll to bottom on new messages
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [currentSession.messages]);
+
   // Handle settings anchor link
   useEffect(() => {
     const handleHashChange = () => {
