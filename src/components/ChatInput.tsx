@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Loader2, Image as ImageIcon, X, Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,6 +7,7 @@ import { useSettings } from '@/contexts/SettingsContext';
 import { getTranslation } from '@/utils/translations';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { useToast } from '@/components/ui/use-toast';
 
 const ChatInput: React.FC = () => {
   const [message, setMessage] = useState('');
@@ -18,6 +18,7 @@ const ChatInput: React.FC = () => {
   const { language, thinkingMode, setThinkingMode } = useSettings();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +36,13 @@ const ChatInput: React.FC = () => {
       }
     } catch (error) {
       console.error('Error sending message:', error);
+      toast({
+        title: getTranslation('error', language),
+        description: error instanceof Error 
+          ? error.message 
+          : getTranslation('unexpectedError', language),
+        variant: "destructive",
+      });
     }
   };
 

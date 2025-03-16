@@ -7,6 +7,7 @@ export const sendMessage = async (
   const API_URL = "/api/chat";  // This will use the relative path which will work with the Flask app
   
   try {
+    console.log('Sending message to API:', prompt);
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
@@ -21,7 +22,7 @@ export const sendMessage = async (
     
     if (!response.ok) {
       console.error('Error response:', response.status, response.statusText);
-      throw new Error(`Failed to send message: ${response.statusText}`);
+      throw new Error(`Failed to send message: ${response.statusText || 'API not available'}`);
     }
     
     return response;
