@@ -1,13 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Send, Loader2, Image as ImageIcon, X, Brain } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+
+import React, { useState } from 'react';
 import { useChat } from '@/contexts/ChatContext';
 import { useSettings } from '@/contexts/SettingsContext';
-import { getTranslation } from '@/utils/translations';
-import { cn } from '@/lib/utils';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/components/ui/use-toast';
+import { getTranslation } from '@/utils/translations';
+
+// Import our new components
+import MessageInputArea from './chat/MessageInputArea';
+import ImageUpload from './chat/ImageUpload';
+import ThinkingModeToggle from './chat/ThinkingModeToggle';
+import SendButton from './chat/SendButton';
 
 const ChatInput: React.FC = () => {
   const [message, setMessage] = useState('');
@@ -17,8 +19,6 @@ const ChatInput: React.FC = () => {
   const [isSending, setIsSending] = useState(false);
   const { sendUserMessage } = useChat();
   const { language, thinkingMode, setThinkingMode } = useSettings();
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,11 +31,6 @@ const ChatInput: React.FC = () => {
       setMessage('');
       setImage(null);
       setImageUrl(null);
-      
-      // Reset textarea height
-      if (textareaRef.current) {
-        textareaRef.current.style.height = 'auto';
-      }
     } catch (error) {
       console.error('Error sending message:', error);
       toast({
@@ -57,33 +52,16 @@ const ChatInput: React.FC = () => {
     }
   };
 
-  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setMessage(e.target.value);
-    
-    // Auto-resize textarea
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`;
-    }
-  };
-
-  const handleImageClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const toggleThinkingMode = () => {
-    setThinkingMode(!thinkingMode);
-  };
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    
+  const handleImageUpload = (file: File) => {
     setIsUploading(true);
     
     // Simple validation
     if (!file.type.startsWith('image/')) {
-      alert('Please upload an image file');
+      toast({
+        title: getTranslation('error', language),
+        description: getTranslation('imageTypeError', language) || 'Please upload an image file',
+        variant: "destructive",
+      });
       setIsUploading(false);
       return;
     }
@@ -103,106 +81,48 @@ const ChatInput: React.FC = () => {
     }
   };
 
+  const toggleThinkingMode = () => {
+    setThinkingMode(!thinkingMode);
+  };
+
   return (
     <div className="w-full max-w-3xl mx-auto px-4 pb-4 relative">
       <div className="glass rounded-xl backdrop-blur-lg shadow-lg p-3 transition-all duration-300 animate-fade-in">
-        {imageUrl && (
-          <div className="relative mb-3 rounded-lg overflow-hidden">
-            <img 
-              src={imageUrl} 
-              alt="Uploaded" 
-              className="max-h-56 mx-auto object-contain rounded-lg" 
-            />
-            <Button 
-              variant="destructive" 
-              size="icon" 
-              className="absolute top-2 right-2 h-6 w-6 opacity-90" 
-              onClick={removeImage}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-        )}
-        
+        {/* Image Preview */}
         <form onSubmit={handleSubmit} className="flex items-end gap-2">
-          <div className="relative flex-1">
-            <Textarea
-              ref={textareaRef}
-              value={message}
-              onChange={handleTextareaChange}
-              onKeyDown={handleKeyPress}
-              placeholder={getTranslation('typeMessage', language)}
-              className="resize-none min-h-[50px] max-h-[200px] pr-24"
-              rows={1}
-              disabled={isSending}
+          {/* Message Input */}
+          <MessageInputArea
+            message={message}
+            isSending={isSending}
+            language={language}
+            onMessageChange={setMessage}
+            onKeyPress={handleKeyPress}
+          />
+          
+          <div className="absolute bottom-2 right-2 flex items-center space-x-1">
+            {/* Thinking Mode Toggle */}
+            <ThinkingModeToggle
+              thinkingMode={thinkingMode}
+              isSending={isSending}
+              language={language}
+              onToggle={toggleThinkingMode}
             />
-            <div className="absolute bottom-2 right-2 flex items-center space-x-1">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    type="button" 
-                    size="icon" 
-                    variant={thinkingMode ? "default" : "ghost"} 
-                    className={cn(
-                      "h-8 w-8 rounded-full", 
-                      thinkingMode ? "bg-primary/80 text-primary-foreground" : "hover:bg-secondary"
-                    )}
-                    onClick={toggleThinkingMode}
-                    disabled={isSending}
-                  >
-                    <Brain className="h-5 w-5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="top">
-                  {thinkingMode 
-                    ? getTranslation('thinkingMode', language) + ' ' + getTranslation('on', language)
-                    : getTranslation('thinkingMode', language) + ' ' + getTranslation('off', language)
-                  }
-                </TooltipContent>
-              </Tooltip>
-              
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    type="button" 
-                    size="icon" 
-                    variant="ghost" 
-                    className="h-8 w-8 rounded-full hover:bg-secondary" 
-                    onClick={handleImageClick}
-                    disabled={isUploading || isSending}
-                  >
-                    {isUploading ? (
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                    ) : (
-                      <ImageIcon className="h-5 w-5" />
-                    )}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="top">
-                  {getTranslation('uploadImage', language)}
-                </TooltipContent>
-              </Tooltip>
-            </div>
+            
+            {/* Image Upload */}
+            <ImageUpload
+              imageUrl={imageUrl}
+              isUploading={isUploading}
+              isSending={isSending}
+              language={language}
+              onImageUpload={handleImageUpload}
+              onRemoveImage={removeImage}
+            />
           </div>
           
-          <Button 
-            type="submit" 
-            className="shrink-0 h-10 w-10 rounded-full"
-            disabled={(!message.trim() && !imageUrl) || isUploading || isSending}
-          >
-            {isSending ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
-            ) : (
-              <Send className="h-5 w-5" />
-            )}
-          </Button>
-          
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleImageUpload}
-            accept="image/*"
-            className="hidden"
+          {/* Send Button */}
+          <SendButton
+            isSending={isSending}
+            isDisabled={(!message.trim() && !imageUrl) || isUploading}
           />
         </form>
       </div>
