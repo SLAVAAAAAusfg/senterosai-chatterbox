@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { CornerDownRight, Bot, User } from 'lucide-react';
-import { Message } from '@/contexts/ChatContext';
+import { Message } from '@/types/chat';
 import { cn } from '@/lib/utils';
 import { useSettings } from '@/contexts/SettingsContext';
 import { getTranslation } from '@/utils/translations';
