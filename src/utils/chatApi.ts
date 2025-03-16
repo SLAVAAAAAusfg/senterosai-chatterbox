@@ -4,7 +4,7 @@ export const sendMessage = async (
   imageUrl: string | null = null, 
   thinkingMode = false
 ): Promise<Response> => {
-  const API_URL = "/api/chat";
+  const API_URL = "/api/chat";  // This will use the relative path which will work with the Flask app
   
   try {
     const response = await fetch(API_URL, {

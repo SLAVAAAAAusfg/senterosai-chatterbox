@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useSettings } from '@/contexts/SettingsContext';
 import { getTranslation } from '@/utils/translations';
 import { Button } from '@/components/ui/button';
-import { Menu, Plus, Settings } from 'lucide-react';
+import { Menu, Plus, Settings, History } from 'lucide-react';
 import { useChat } from '@/contexts/ChatContext';
 import UserMenu from './UserMenu';
 
@@ -36,6 +36,17 @@ const Header = () => {
       </div>
       
       <div className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="hidden md:flex"
+          onClick={() => setSidebarOpen(!isSidebarOpen)}
+          title={getTranslation('chatHistory', language)}
+        >
+          <History className="h-5 w-5" />
+          <span className="sr-only">{getTranslation('chatHistory', language)}</span>
+        </Button>
+
         <Button
           variant="outline"
           size="sm"

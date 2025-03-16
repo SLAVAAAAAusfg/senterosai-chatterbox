@@ -111,7 +111,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ className }) => {
             <h2 className="text-lg font-semibold">
               {getTranslation('chatHistory', language)}
             </h2>
-            <Button variant="ghost" size="icon" onClick={handleCloseSidebar} className="md:hidden">
+            <Button variant="ghost" size="icon" onClick={handleCloseSidebar}>
               <X className="h-5 w-5" />
             </Button>
           </div>
