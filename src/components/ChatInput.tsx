@@ -14,6 +14,7 @@ const ChatInput: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const { sendUserMessage } = useChat();
   const { language, thinkingMode, setThinkingMode } = useSettings();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -23,6 +24,7 @@ const ChatInput: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim() && !imageUrl) return;
+    setIsSending(true);
 
     try {
       await sendUserMessage(message, imageUrl);
@@ -43,6 +45,8 @@ const ChatInput: React.FC = () => {
           : getTranslation('unexpectedError', language),
         variant: "destructive",
       });
+    } finally {
+      setIsSending(false);
     }
   };
 
@@ -130,6 +134,7 @@ const ChatInput: React.FC = () => {
               placeholder={getTranslation('typeMessage', language)}
               className="resize-none min-h-[50px] max-h-[200px] pr-24"
               rows={1}
+              disabled={isSending}
             />
             <div className="absolute bottom-2 right-2 flex items-center space-x-1">
               <Tooltip>
@@ -143,6 +148,7 @@ const ChatInput: React.FC = () => {
                       thinkingMode ? "bg-primary/80 text-primary-foreground" : "hover:bg-secondary"
                     )}
                     onClick={toggleThinkingMode}
+                    disabled={isSending}
                   >
                     <Brain className="h-5 w-5" />
                   </Button>
@@ -163,7 +169,7 @@ const ChatInput: React.FC = () => {
                     variant="ghost" 
                     className="h-8 w-8 rounded-full hover:bg-secondary" 
                     onClick={handleImageClick}
-                    disabled={isUploading}
+                    disabled={isUploading || isSending}
                   >
                     {isUploading ? (
                       <Loader2 className="h-5 w-5 animate-spin" />
@@ -182,9 +188,13 @@ const ChatInput: React.FC = () => {
           <Button 
             type="submit" 
             className="shrink-0 h-10 w-10 rounded-full"
-            disabled={(!message.trim() && !imageUrl) || isUploading}
+            disabled={(!message.trim() && !imageUrl) || isUploading || isSending}
           >
-            <Send className="h-5 w-5" />
+            {isSending ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              <Send className="h-5 w-5" />
+            )}
           </Button>
           
           <input

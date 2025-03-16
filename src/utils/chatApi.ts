@@ -4,10 +4,16 @@ export const sendMessage = async (
   imageUrl: string | null = null, 
   thinkingMode = false
 ): Promise<Response> => {
-  const API_URL = "/api/chat";  // This will use the relative path which will work with the Flask app
+  // For development in the Lovable environment, we need to proxy the request to the Flask backend
+  const isProdOrDev = window.location.hostname.includes('lovableproject.com');
+  // In production or development in Lovable, we'll use a proxy URL
+  const API_URL = isProdOrDev 
+    ? "https://flask-backend-7u8p.onrender.com/api/chat" 
+    : "/api/chat";  // Local development path
   
   try {
-    console.log('Sending message to API:', prompt);
+    console.log('Sending message to API:', prompt, 'URL:', API_URL);
+    
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
