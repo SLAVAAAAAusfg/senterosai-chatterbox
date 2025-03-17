@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Message, ChatSession } from '../types/chat';
 import { sendMessage } from '../utils/chatApi';
@@ -19,14 +18,17 @@ export const useMessageHandling = ({
   thinkingMode 
 }: MessageHandlingProps) => {
   const { playMessageSentSound, playMessageReceivedSound } = useChatAudio(soundEnabled);
-  
+  const messagesRef = useRef<Message[]>([]);
+
+  if (currentSession.messages !== messagesRef.current) {
+    messagesRef.current = currentSession.messages;
+  }
+
   const sendUserMessage = async (message: string, imageUrl: string | null = null) => {
     if (!message.trim()) return;
 
-    // Play sent message sound
     playMessageSentSound();
 
-    // Add user message to the current session
     const userMessage: Message = {
       id: uuidv4(),
       content: message,
@@ -34,7 +36,6 @@ export const useMessageHandling = ({
       timestamp: new Date(),
     };
 
-    // Add a pending assistant message
     const pendingAssistantMessage: Message = {
       id: uuidv4(),
       content: '',
@@ -44,27 +45,26 @@ export const useMessageHandling = ({
       thinking: thinkingMode,
     };
 
-    const updatedMessages = [...currentSession.messages, userMessage, pendingAssistantMessage];
+    const updatedMessages = [...messagesRef.current, userMessage, pendingAssistantMessage];
+    messagesRef.current = updatedMessages;
+
     const updatedSession = {
       ...currentSession,
       messages: updatedMessages,
-      title: currentSession.messages.length === 0 ? message.slice(0, 30) : currentSession.title,
+      title: messagesRef.current.length === 0 ? message.slice(0, 30) : currentSession.title,
     };
     updateSession(updatedSession);
 
     try {
-      // Auto-generate title for new chats
-      if (currentSession.messages.length === 0) {
+      if (messagesRef.current.length === 2) {
         const newTitle = message.slice(0, 30) + (message.length > 30 ? '...' : '');
         const titledSession = { ...updatedSession, title: newTitle };
         updateSession(titledSession);
       }
 
-      // Send the message to the API
       let fullResponse = '';
       const response = await sendMessage(message, imageUrl, thinkingMode);
 
-      // Create a reader to read the stream
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
 
@@ -72,12 +72,10 @@ export const useMessageHandling = ({
         throw new Error('Failed to create reader from response');
       }
 
-      // Read the stream
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        // Decode the chunk and parse the events
         const chunk = decoder.decode(value, { stream: true });
         const lines = chunk.split('\n\n');
         
@@ -99,17 +97,17 @@ export const useMessageHandling = ({
               if (parsed.content) {
                 fullResponse += parsed.content;
                 
-                // Update the pending message with the current response
-                // Important: Get the current session messages to avoid losing previous messages
-                const currentMessages = [...currentSession.messages];
+                const currentMessages = [...messagesRef.current];
                 const assistantMsgIndex = currentMessages.length - 1;
                 
-                if (currentMessages[assistantMsgIndex]?.role === 'assistant') {
+                if (assistantMsgIndex >= 0 && currentMessages[assistantMsgIndex]?.role === 'assistant') {
                   currentMessages[assistantMsgIndex] = {
                     ...currentMessages[assistantMsgIndex],
                     content: fullResponse,
                     pending: true,
                   };
+                  
+                  messagesRef.current = currentMessages;
                   
                   const updatedSession = {
                     ...currentSession,
@@ -126,17 +124,17 @@ export const useMessageHandling = ({
         }
       }
 
-      // Mark the message as no longer pending once stream completes
-      // Important: Get the current session messages again to avoid losing messages
-      const finalMessages = [...currentSession.messages];
+      const finalMessages = [...messagesRef.current];
       const assistantMsgIndex = finalMessages.length - 1;
       
-      if (finalMessages[assistantMsgIndex]?.role === 'assistant') {
+      if (assistantMsgIndex >= 0 && finalMessages[assistantMsgIndex]?.role === 'assistant') {
         finalMessages[assistantMsgIndex] = {
           ...finalMessages[assistantMsgIndex],
           content: fullResponse,
           pending: false,
         };
+        
+        messagesRef.current = finalMessages;
         
         const finalSession = {
           ...currentSession,
@@ -146,23 +144,22 @@ export const useMessageHandling = ({
         updateSession(finalSession);
       }
 
-      // Play received message sound
       playMessageReceivedSound();
 
     } catch (error) {
       console.error('Error sending message:', error);
       
-      // Update the pending message to show the error
-      // Important: Get the current session messages to avoid losing previous messages
-      const errorMessages = [...currentSession.messages];
+      const errorMessages = [...messagesRef.current];
       const assistantMsgIndex = errorMessages.length - 1;
       
-      if (errorMessages[assistantMsgIndex]?.role === 'assistant') {
+      if (assistantMsgIndex >= 0 && errorMessages[assistantMsgIndex]?.role === 'assistant') {
         errorMessages[assistantMsgIndex] = {
           ...errorMessages[assistantMsgIndex],
           content: `Ошибка: ${error instanceof Error ? error.message : 'Что-то пошло не так'}`,
           pending: false,
         };
+        
+        messagesRef.current = errorMessages;
         
         const errorSession = {
           ...currentSession,
@@ -175,8 +172,7 @@ export const useMessageHandling = ({
   };
 
   const regenerateResponse = async () => {
-    // Find the last user message
-    const messages = [...currentSession.messages];
+    const messages = [...messagesRef.current];
     let lastUserMessageIndex = -1;
     
     for (let i = messages.length - 1; i >= 0; i--) {
@@ -188,9 +184,10 @@ export const useMessageHandling = ({
     
     if (lastUserMessageIndex === -1) return;
     
-    // Remove all assistant messages after the last user message
     const lastUserMessage = messages[lastUserMessageIndex];
     const updatedMessages = messages.slice(0, lastUserMessageIndex + 1);
+    
+    messagesRef.current = updatedMessages;
     
     const updatedSession = {
       ...currentSession,
@@ -199,7 +196,6 @@ export const useMessageHandling = ({
     
     updateSession(updatedSession);
     
-    // Send the last user message again
     await sendUserMessage(lastUserMessage.content);
   };
 
