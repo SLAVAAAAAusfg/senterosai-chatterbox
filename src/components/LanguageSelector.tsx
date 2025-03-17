@@ -1,15 +1,17 @@
+
 import React from 'react';
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSettings } from '@/contexts/SettingsContext';
 import { getTranslation } from '@/utils/translations';
 
+// Define languages with the correct Language type
 const languages = [
-  { code: 'ru', name: 'Русский' },
-  { code: 'en', name: 'English' },
-  { code: 'fr', name: 'Français' },
-  { code: 'de', name: 'Deutsch' },
-  { code: 'es', name: 'Español' },
+  { code: 'ru' as const, name: 'Русский' },
+  { code: 'en' as const, name: 'English' },
+  { code: 'fr' as const, name: 'Français' },
+  { code: 'de' as const, name: 'Deutsch' },
+  { code: 'es' as const, name: 'Español' },
 ];
 
 const LanguageSelector: React.FC = () => {
