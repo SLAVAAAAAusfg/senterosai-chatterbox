@@ -100,21 +100,24 @@ export const useMessageHandling = ({
                 fullResponse += parsed.content;
                 
                 // Update the pending message with the current response
-                const curMessages = [...currentSession.messages];
-                const assistantMsgIndex = curMessages.length - 1;
+                // Important: Get the current session messages to avoid losing previous messages
+                const currentMessages = [...currentSession.messages];
+                const assistantMsgIndex = currentMessages.length - 1;
                 
-                curMessages[assistantMsgIndex] = {
-                  ...curMessages[assistantMsgIndex],
-                  content: fullResponse,
-                  pending: true,
-                };
-                
-                const updatedSession = {
-                  ...currentSession,
-                  messages: curMessages,
-                };
-                
-                updateSession(updatedSession);
+                if (currentMessages[assistantMsgIndex]?.role === 'assistant') {
+                  currentMessages[assistantMsgIndex] = {
+                    ...currentMessages[assistantMsgIndex],
+                    content: fullResponse,
+                    pending: true,
+                  };
+                  
+                  const updatedSession = {
+                    ...currentSession,
+                    messages: currentMessages,
+                  };
+                  
+                  updateSession(updatedSession);
+                }
               }
             } catch (e) {
               console.error('Error parsing data:', e);
@@ -124,21 +127,24 @@ export const useMessageHandling = ({
       }
 
       // Mark the message as no longer pending once stream completes
+      // Important: Get the current session messages again to avoid losing messages
       const finalMessages = [...currentSession.messages];
       const assistantMsgIndex = finalMessages.length - 1;
       
-      finalMessages[assistantMsgIndex] = {
-        ...finalMessages[assistantMsgIndex],
-        content: fullResponse,
-        pending: false,
-      };
-      
-      const finalSession = {
-        ...currentSession,
-        messages: finalMessages,
-      };
-      
-      updateSession(finalSession);
+      if (finalMessages[assistantMsgIndex]?.role === 'assistant') {
+        finalMessages[assistantMsgIndex] = {
+          ...finalMessages[assistantMsgIndex],
+          content: fullResponse,
+          pending: false,
+        };
+        
+        const finalSession = {
+          ...currentSession,
+          messages: finalMessages,
+        };
+        
+        updateSession(finalSession);
+      }
 
       // Play received message sound
       playMessageReceivedSound();
@@ -147,21 +153,24 @@ export const useMessageHandling = ({
       console.error('Error sending message:', error);
       
       // Update the pending message to show the error
+      // Important: Get the current session messages to avoid losing previous messages
       const errorMessages = [...currentSession.messages];
       const assistantMsgIndex = errorMessages.length - 1;
       
-      errorMessages[assistantMsgIndex] = {
-        ...errorMessages[assistantMsgIndex],
-        content: `Ошибка: ${error instanceof Error ? error.message : 'Что-то пошло не так'}`,
-        pending: false,
-      };
-      
-      const errorSession = {
-        ...currentSession,
-        messages: errorMessages,
-      };
-      
-      updateSession(errorSession);
+      if (errorMessages[assistantMsgIndex]?.role === 'assistant') {
+        errorMessages[assistantMsgIndex] = {
+          ...errorMessages[assistantMsgIndex],
+          content: `Ошибка: ${error instanceof Error ? error.message : 'Что-то пошло не так'}`,
+          pending: false,
+        };
+        
+        const errorSession = {
+          ...currentSession,
+          messages: errorMessages,
+        };
+        
+        updateSession(errorSession);
+      }
     }
   };
 
