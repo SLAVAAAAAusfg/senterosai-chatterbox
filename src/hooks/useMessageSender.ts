@@ -3,6 +3,7 @@ import { useRef, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Message, ChatSession } from '../types/chat';
 import { sendMessage } from '../utils/chatApi';
+import { useStreamProcessor } from './useStreamProcessor';
 
 interface MessageSenderProps {
   currentSession: ChatSession;
@@ -24,6 +25,13 @@ export const useMessageSender = ({
   if (currentSession.messages !== messagesRef.current) {
     messagesRef.current = currentSession.messages;
   }
+
+  const { processStreamResponse } = useStreamProcessor({
+    currentSession,
+    updateSession,
+    messagesRef,
+    playMessageReceivedSound
+  });
 
   const sendUserMessage = useCallback(async (message: string, imageUrl: string | null = null) => {
     if (!message.trim()) return;
@@ -63,11 +71,8 @@ export const useMessageSender = ({
         updateSession(titledSession);
       }
 
-      let fullResponse = '';
       const response = await sendMessage(message, imageUrl, thinkingMode);
-
-      await handleStreamResponse(response, fullResponse);
-      playMessageReceivedSound();
+      await processStreamResponse(response);
 
     } catch (error) {
       console.error('Error sending message:', error);
@@ -92,88 +97,7 @@ export const useMessageSender = ({
         updateSession(errorSession);
       }
     }
-  }, [currentSession, thinkingMode, playMessageSentSound, playMessageReceivedSound, updateSession]);
-
-  const handleStreamResponse = async (response: Response, fullResponse: string) => {
-    const reader = response.body?.getReader();
-    const decoder = new TextDecoder();
-
-    if (!reader) {
-      throw new Error('Failed to create reader from response');
-    }
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      const chunk = decoder.decode(value, { stream: true });
-      const lines = chunk.split('\n\n');
-      
-      for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          const data = line.slice(6);
-          
-          if (data === '[DONE]') {
-            break;
-          }
-          
-          try {
-            const parsed = JSON.parse(data);
-            
-            if (parsed.error) {
-              throw new Error(parsed.error);
-            }
-            
-            if (parsed.content) {
-              fullResponse += parsed.content;
-              
-              const currentMessages = [...messagesRef.current];
-              const assistantMsgIndex = currentMessages.length - 1;
-              
-              if (assistantMsgIndex >= 0 && currentMessages[assistantMsgIndex]?.role === 'assistant') {
-                currentMessages[assistantMsgIndex] = {
-                  ...currentMessages[assistantMsgIndex],
-                  content: fullResponse,
-                  pending: true,
-                };
-                
-                messagesRef.current = currentMessages;
-                
-                const updatedSession = {
-                  ...currentSession,
-                  messages: currentMessages,
-                };
-                
-                updateSession(updatedSession);
-              }
-            }
-          } catch (e) {
-            console.error('Error parsing data:', e);
-          }
-        }
-      }
-    }
-
-    const finalMessages = [...messagesRef.current];
-    const assistantMsgIndex = finalMessages.length - 1;
-    
-    if (assistantMsgIndex >= 0 && finalMessages[assistantMsgIndex]?.role === 'assistant') {
-      finalMessages[assistantMsgIndex] = {
-        ...finalMessages[assistantMsgIndex],
-        content: fullResponse,
-        pending: false,
-      };
-      
-      messagesRef.current = finalMessages;
-      
-      const finalSession = {
-        ...currentSession,
-        messages: finalMessages,
-      };
-      
-      updateSession(finalSession);
-    }
-  };
+  }, [currentSession, thinkingMode, playMessageSentSound, playMessageReceivedSound, updateSession, processStreamResponse]);
 
   return { sendUserMessage, messagesRef };
 };
