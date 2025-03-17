@@ -61,7 +61,7 @@ const ImageUpload = ({
             type="button" 
             size="icon" 
             variant="ghost" 
-            className="h-8 w-8 rounded-full hover:bg-secondary" 
+            className="h-10 w-10 rounded-full flex items-center justify-center hover:bg-secondary" 
             onClick={handleImageClick}
             disabled={isUploading || isSending}
           >

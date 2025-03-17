@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -11,12 +10,6 @@ const languages = [
   { code: 'fr', name: 'Français' },
   { code: 'de', name: 'Deutsch' },
   { code: 'es', name: 'Español' },
-  { code: 'it', name: 'Italiano' },
-  { code: 'zh', name: '中文' },
-  { code: 'ja', name: '日本語' },
-  { code: 'ko', name: '한국어' },
-  { code: 'pt', name: 'Português' },
-  { code: 'ar', name: 'العربية' },
 ];
 
 const LanguageSelector: React.FC = () => {
@@ -33,7 +26,7 @@ const LanguageSelector: React.FC = () => {
               ? "bg-primary text-primary-foreground" 
               : "bg-secondary hover:bg-secondary/80"
           )}
-          onClick={() => setLanguage(lang.code as any)}
+          onClick={() => setLanguage(lang.code)}
         >
           <span>{lang.name}</span>
           {language === lang.code && <Check className="h-4 w-4" />}

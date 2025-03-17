@@ -17,7 +17,7 @@ const translations: Translations = {
     system: "Системная",
     language: "Язык",
     autoScroll: "Автопрокрутка к новым сообщениям",
-    soundNotifications: "Звуковые уведомления",
+    soundNotifications: "Звуки",
     chatHistory: "История чатов",
     clearChat: "Очистить чат",
     regenerateResponse: "Перегенерировать ответ",
@@ -63,7 +63,7 @@ const translations: Translations = {
     system: "System",
     language: "Language",
     autoScroll: "Auto-scroll to new messages",
-    soundNotifications: "Sound notifications",
+    soundNotifications: "Sounds",
     chatHistory: "Chat History",
     clearChat: "Clear Chat",
     regenerateResponse: "Regenerate Response",
@@ -109,7 +109,7 @@ const translations: Translations = {
     system: "Système",
     language: "Langue",
     autoScroll: "Défilement automatique",
-    soundNotifications: "Notifications sonores",
+    soundNotifications: "Sons",
     chatHistory: "Historique des conversations",
     clearChat: "Effacer la conversation",
     regenerateResponse: "Régénérer la réponse",
@@ -144,7 +144,7 @@ const translations: Translations = {
     system: "System",
     language: "Sprache",
     autoScroll: "Automatisches Scrollen",
-    soundNotifications: "Ton-Benachrichtigungen",
+    soundNotifications: "Töne",
     chatHistory: "Chat-Verlauf",
     clearChat: "Chat löschen",
     regenerateResponse: "Antwort neu generieren",
@@ -179,7 +179,7 @@ const translations: Translations = {
     system: "Sistema",
     language: "Idioma",
     autoScroll: "Desplazamiento automático",
-    soundNotifications: "Notificaciones de sonido",
+    soundNotifications: "Sonidos",
     chatHistory: "Historial de chats",
     clearChat: "Borrar chat",
     regenerateResponse: "Regenerar respuesta",
@@ -202,7 +202,6 @@ const translations: Translations = {
     on: "Activado",
     off: "Desactivado",
   },
-  // Add more languages as needed...
 };
 
 export const getTranslation = (key: string, language: string): string => {

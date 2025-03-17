@@ -27,7 +27,7 @@ const ThinkingModeToggle = ({
           size="icon" 
           variant={thinkingMode ? "default" : "ghost"} 
           className={cn(
-            "h-8 w-8 rounded-full", 
+            "h-10 w-10 rounded-full flex items-center justify-center", 
             thinkingMode ? "bg-primary/80 text-primary-foreground" : "hover:bg-secondary"
           )}
           onClick={onToggle}

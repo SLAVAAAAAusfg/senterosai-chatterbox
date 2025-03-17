@@ -99,7 +99,7 @@ const ChatInput: React.FC = () => {
             onKeyPress={handleKeyPress}
           />
           
-          <div className="absolute bottom-2 right-2 flex items-center space-x-1">
+          <div className="flex items-center space-x-1">
             {/* Thinking Mode Toggle */}
             <ThinkingModeToggle
               thinkingMode={thinkingMode}
@@ -117,13 +117,13 @@ const ChatInput: React.FC = () => {
               onImageUpload={handleImageUpload}
               onRemoveImage={removeImage}
             />
+            
+            {/* Send Button */}
+            <SendButton
+              isSending={isSending}
+              isDisabled={(!message.trim() && !imageUrl) || isUploading}
+            />
           </div>
-          
-          {/* Send Button */}
-          <SendButton
-            isSending={isSending}
-            isDisabled={(!message.trim() && !imageUrl) || isUploading}
-          />
         </form>
       </div>
     </div>

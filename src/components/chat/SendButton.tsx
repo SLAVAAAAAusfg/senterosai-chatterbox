@@ -12,7 +12,7 @@ const SendButton = ({ isSending, isDisabled }: SendButtonProps) => {
   return (
     <Button 
       type="submit" 
-      className="shrink-0 h-10 w-10 rounded-full"
+      className="h-10 w-10 rounded-full flex items-center justify-center"
       disabled={isDisabled || isSending}
     >
       {isSending ? (

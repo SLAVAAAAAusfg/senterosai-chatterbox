@@ -9,6 +9,65 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      chats: {
+        Row: {
+          created_at: string | null
+          id: string
+          title: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          title: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          title?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          chat_id: string | null
+          content: string
+          id: string
+          image_url: string | null
+          role: string
+          timestamp: string | null
+        }
+        Insert: {
+          chat_id?: string | null
+          content: string
+          id?: string
+          image_url?: string | null
+          role: string
+          timestamp?: string | null
+        }
+        Update: {
+          chat_id?: string | null
+          content?: string
+          id?: string
+          image_url?: string | null
+          role?: string
+          timestamp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_chat_id_fkey"
+            columns: ["chat_id"]
+            isOneToOne: false
+            referencedRelation: "chats"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -30,6 +89,39 @@ export type Database = {
           id?: string
           updated_at?: string
           username?: string | null
+        }
+        Relationships: []
+      }
+      tracks: {
+        Row: {
+          audio_url: string
+          cover_url: string
+          created_at: string | null
+          id: string
+          lyrics: string | null
+          plays: number | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          audio_url: string
+          cover_url: string
+          created_at?: string | null
+          id?: string
+          lyrics?: string | null
+          plays?: number | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          audio_url?: string
+          cover_url?: string
+          created_at?: string | null
+          id?: string
+          lyrics?: string | null
+          plays?: number | null
+          title?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -65,7 +157,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      increment_plays: {
+        Args: {
+          track_id: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

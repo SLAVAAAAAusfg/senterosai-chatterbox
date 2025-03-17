@@ -3,21 +3,17 @@ import { useRef, useEffect } from 'react';
 
 export const useChatAudio = (soundEnabled: boolean) => {
   const messageSentAudio = useRef<HTMLAudioElement | null>(null);
-  const messageReceivedAudio = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    // Initialize audio elements
-    messageSentAudio.current = new Audio('/message-sent.mp3');
-    messageReceivedAudio.current = new Audio('/message-received.mp3');
+    // Initialize audio elements with the specified sound
+    messageSentAudio.current = new Audio('https://audio.com/danylichka1-top/audio/message');
     
     // Set volume
     if (messageSentAudio.current) messageSentAudio.current.volume = 0.5;
-    if (messageReceivedAudio.current) messageReceivedAudio.current.volume = 0.5;
 
     return () => {
       // Cleanup
       messageSentAudio.current = null;
-      messageReceivedAudio.current = null;
     };
   }, []);
 
@@ -27,10 +23,9 @@ export const useChatAudio = (soundEnabled: boolean) => {
     }
   };
 
+  // We're not using the received sound anymore as per requirements
   const playMessageReceivedSound = () => {
-    if (soundEnabled && messageReceivedAudio.current) {
-      messageReceivedAudio.current.play().catch(e => console.error("Error playing sound:", e));
-    }
+    // This is intentionally empty as per requirements
   };
 
   return {
