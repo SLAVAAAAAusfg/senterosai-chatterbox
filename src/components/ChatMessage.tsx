@@ -24,12 +24,28 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, isLastMessage }) => 
   const { language, autoScroll } = useSettings();
   const messageRef = useRef<HTMLDivElement>(null);
   const isAI = message.role === 'assistant';
+  const isEmpty = message.content.trim() === '';
+  const isThinking = message.thinking === true;
+  const isPending = message.pending === true;
 
   useEffect(() => {
     if (isLastMessage && autoScroll && messageRef.current) {
       messageRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [message.content, isLastMessage, autoScroll]);
+
+  useEffect(() => {
+    // Debug logging for message state
+    console.log('Message state:', {
+      id: message.id,
+      role: message.role,
+      isEmpty,
+      isThinking,
+      isPending,
+      contentLength: message.content.length,
+      content: message.content.slice(0, 20) + (message.content.length > 20 ? '...' : '')
+    });
+  }, [message, isEmpty, isThinking, isPending]);
 
   return (
     <div 
@@ -56,16 +72,20 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, isLastMessage }) => 
           <div className="flex-1 min-w-0">
             <div className="text-sm text-muted-foreground mb-1">
               {isAI ? 'SenterosAI' : 'Вы'}
-              {message.thinking && (
+              {isThinking && (
                 <span className="ml-2 text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full">
                   {getTranslation('thinking', language)}
                 </span>
               )}
             </div>
             
-            <div className={cn("message-content markdown", message.pending ? 'opacity-80' : '')}>
-              {message.pending && message.content === '' ? (
+            <div className={cn("message-content markdown", isPending ? 'opacity-80' : '')}>
+              {isPending && isEmpty ? (
                 <TypingIndicator />
+              ) : isEmpty ? (
+                <p className="text-muted-foreground italic">
+                  {isAI ? getTranslation('emptyResponse', language) : ''}
+                </p>
               ) : (
                 <ReactMarkdown>{message.content}</ReactMarkdown>
               )}

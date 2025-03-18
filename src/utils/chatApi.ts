@@ -12,7 +12,8 @@ export const sendMessage = async (
   const API_KEY = "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";
   
   try {
-    console.log('Sending message to API with model:', thinkingMode ? MODELS.thinking : MODELS.default);
+    const model = thinkingMode ? MODELS.thinking : MODELS.default;
+    console.log('Sending message to API with model:', model);
     
     // Create payload for the OpenRouter API
     const messages = [];
@@ -49,10 +50,12 @@ export const sendMessage = async (
 
     // Create the API request payload
     const payload = {
-      model: thinkingMode ? MODELS.thinking : MODELS.default,
+      model: model,
       messages: messages,
       stream: true
     };
+
+    console.log('Sending payload to OpenRouter:', JSON.stringify(payload));
 
     // Make the API request directly to OpenRouter
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -66,6 +69,7 @@ export const sendMessage = async (
       throw new Error(`Failed to send message: ${response.statusText || 'API not available'}`);
     }
     
+    console.log('Response status:', response.status, response.statusText);
     return response;
   } catch (error) {
     console.error('Error sending message:', error);
