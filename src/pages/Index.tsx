@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, MessagesSquare, Plus, RotateCcw, Trash2, Settings } from 'lucide-react';
+import { Menu, MessagesSquare, Plus, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useChat } from '@/contexts/ChatContext';
 import { useSettings } from '@/contexts/SettingsContext';
@@ -13,7 +13,7 @@ import SettingsDialog from '@/components/SettingsDialog';
 import UserMenu from '@/components/UserMenu';
 
 const Index = () => {
-  const { currentSession, createNewSession, clearMessages, regenerateResponse } = useChat();
+  const { currentSession, createNewSession } = useChat();
   const { language, isSidebarOpen, setSidebarOpen } = useSettings();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -88,30 +88,7 @@ const Index = () => {
           )}
         </div>
         
-        {/* Action buttons - уменьшаем размер в 2 раза */}
-        {currentSession.messages.length > 0 && (
-          <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2 flex items-center gap-1 glass-dim px-2 py-1 rounded-full opacity-90 hover:opacity-100 transition-opacity z-10 scale-50">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-6 text-xs flex items-center gap-1"
-              onClick={clearMessages}
-            >
-              <Trash2 className="h-3 w-3" />
-              {getTranslation('clearChat', language)}
-            </Button>
-            <span className="text-muted-foreground text-xs">|</span>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-6 text-xs flex items-center gap-1"
-              onClick={regenerateResponse}
-            >
-              <RotateCcw className="h-3 w-3" />
-              {getTranslation('regenerateResponse', language)}
-            </Button>
-          </div>
-        )}
+        {/* Removed action buttons (Clear Chat and Regenerate Response) */}
         
         {/* Input area */}
         <div className="sticky bottom-0 left-0 right-0 pb-4 pt-2 bg-gradient-to-t from-background to-transparent">
