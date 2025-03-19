@@ -60,20 +60,19 @@ export const useStreamProcessor = ({
                 hasReceivedContent = true;
                 
                 console.log('Content received:', content);
-                console.log('Full response so far:', fullResponse);
                 
                 const currentMessages = [...messagesRef.current];
                 const assistantMsgIndex = currentMessages.length - 1;
                 
                 if (assistantMsgIndex >= 0 && currentMessages[assistantMsgIndex]?.role === 'assistant') {
-                  // Сохраняем признак thinking при обновлении сообщения
+                  // Preserve thinking mode flag when updating the message
                   const isThinking = currentMessages[assistantMsgIndex].thinking;
                   
                   currentMessages[assistantMsgIndex] = {
                     ...currentMessages[assistantMsgIndex],
                     content: fullResponse,
                     pending: true,
-                    thinking: isThinking, // Сохраняем признак "думающей" модели
+                    thinking: isThinking, // Keep thinking flag unchanged
                   };
                   
                   messagesRef.current = currentMessages;
@@ -98,14 +97,14 @@ export const useStreamProcessor = ({
                 const assistantMsgIndex = currentMessages.length - 1;
                 
                 if (assistantMsgIndex >= 0 && currentMessages[assistantMsgIndex]?.role === 'assistant') {
-                  // Сохраняем признак thinking при обновлении сообщения
+                  // Preserve thinking mode flag when updating the message
                   const isThinking = currentMessages[assistantMsgIndex].thinking;
                   
                   currentMessages[assistantMsgIndex] = {
                     ...currentMessages[assistantMsgIndex],
                     content: fullResponse,
                     pending: true,
-                    thinking: isThinking, // Сохраняем признак "думающей" модели
+                    thinking: isThinking, // Keep thinking flag unchanged
                   };
                   
                   messagesRef.current = currentMessages;
@@ -135,14 +134,14 @@ export const useStreamProcessor = ({
       const assistantMsgIndex = finalMessages.length - 1;
       
       if (assistantMsgIndex >= 0 && finalMessages[assistantMsgIndex]?.role === 'assistant') {
-        // Сохраняем признак thinking при завершении
+        // Preserve thinking mode flag when finalizing the message
         const isThinking = finalMessages[assistantMsgIndex].thinking;
         
         finalMessages[assistantMsgIndex] = {
           ...finalMessages[assistantMsgIndex],
           content: fullResponse || 'Sorry, I couldn\'t generate a response. Please try again.',
           pending: false,
-          thinking: isThinking, // Сохраняем признак "думающей" модели
+          thinking: isThinking, // Keep thinking flag unchanged
         };
         
         messagesRef.current = finalMessages;
@@ -167,14 +166,14 @@ export const useStreamProcessor = ({
       const assistantMsgIndex = errorMessages.length - 1;
       
       if (assistantMsgIndex >= 0 && errorMessages[assistantMsgIndex]?.role === 'assistant') {
-        // Сохраняем признак thinking при ошибке
+        // Preserve thinking mode flag even when handling errors
         const isThinking = errorMessages[assistantMsgIndex].thinking;
         
         errorMessages[assistantMsgIndex] = {
           ...errorMessages[assistantMsgIndex],
           content: 'Sorry, there was an error processing your request. Please try again.',
           pending: false,
-          thinking: isThinking, // Сохраняем признак "думающей" модели
+          thinking: isThinking, // Keep thinking flag unchanged
         };
         
         messagesRef.current = errorMessages;
