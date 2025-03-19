@@ -90,7 +90,7 @@ const Index = () => {
         
         {/* Action buttons - уменьшаем размер в 2 раза */}
         {currentSession.messages.length > 0 && (
-          <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2 flex items-center gap-1 glass-dim px-2 py-1 rounded-full opacity-90 hover:opacity-100 transition-opacity z-10 scale-90">
+          <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2 flex items-center gap-1 glass-dim px-2 py-1 rounded-full opacity-90 hover:opacity-100 transition-opacity z-10 scale-50">
             <Button 
               variant="ghost" 
               size="sm" 
