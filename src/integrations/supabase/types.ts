@@ -40,6 +40,7 @@ export type Database = {
           id: string
           image_url: string | null
           role: string
+          thinking: string | null
           timestamp: string | null
         }
         Insert: {
@@ -48,6 +49,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           role: string
+          thinking?: string | null
           timestamp?: string | null
         }
         Update: {
@@ -56,6 +58,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           role?: string
+          thinking?: string | null
           timestamp?: string | null
         }
         Relationships: [

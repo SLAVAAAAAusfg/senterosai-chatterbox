@@ -88,26 +88,26 @@ const Index = () => {
           )}
         </div>
         
-        {/* Action buttons */}
+        {/* Action buttons - уменьшаем размер в 2 раза */}
         {currentSession.messages.length > 0 && (
-          <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 flex items-center gap-2 glass-dim px-3 py-1.5 rounded-full opacity-90 hover:opacity-100 transition-opacity z-10">
+          <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2 flex items-center gap-1 glass-dim px-2 py-1 rounded-full opacity-90 hover:opacity-100 transition-opacity z-10 scale-90">
             <Button 
               variant="ghost" 
               size="sm" 
-              className="h-8 text-xs flex items-center gap-1"
+              className="h-6 text-xs flex items-center gap-1"
               onClick={clearMessages}
             >
-              <Trash2 className="h-3.5 w-3.5" />
+              <Trash2 className="h-3 w-3" />
               {getTranslation('clearChat', language)}
             </Button>
-            <span className="text-muted-foreground">|</span>
+            <span className="text-muted-foreground text-xs">|</span>
             <Button 
               variant="ghost" 
               size="sm" 
-              className="h-8 text-xs flex items-center gap-1"
+              className="h-6 text-xs flex items-center gap-1"
               onClick={regenerateResponse}
             >
-              <RotateCcw className="h-3.5 w-3.5" />
+              <RotateCcw className="h-3 w-3" />
               {getTranslation('regenerateResponse', language)}
             </Button>
           </div>

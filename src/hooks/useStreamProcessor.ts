@@ -66,11 +66,14 @@ export const useStreamProcessor = ({
                 const assistantMsgIndex = currentMessages.length - 1;
                 
                 if (assistantMsgIndex >= 0 && currentMessages[assistantMsgIndex]?.role === 'assistant') {
+                  // Сохраняем признак thinking при обновлении сообщения
+                  const isThinking = currentMessages[assistantMsgIndex].thinking;
+                  
                   currentMessages[assistantMsgIndex] = {
                     ...currentMessages[assistantMsgIndex],
                     content: fullResponse,
                     pending: true,
-                    thinking: false,
+                    thinking: isThinking, // Сохраняем признак "думающей" модели
                   };
                   
                   messagesRef.current = currentMessages;
@@ -95,11 +98,14 @@ export const useStreamProcessor = ({
                 const assistantMsgIndex = currentMessages.length - 1;
                 
                 if (assistantMsgIndex >= 0 && currentMessages[assistantMsgIndex]?.role === 'assistant') {
+                  // Сохраняем признак thinking при обновлении сообщения
+                  const isThinking = currentMessages[assistantMsgIndex].thinking;
+                  
                   currentMessages[assistantMsgIndex] = {
                     ...currentMessages[assistantMsgIndex],
                     content: fullResponse,
                     pending: true,
-                    thinking: false,
+                    thinking: isThinking, // Сохраняем признак "думающей" модели
                   };
                   
                   messagesRef.current = currentMessages;
@@ -129,11 +135,14 @@ export const useStreamProcessor = ({
       const assistantMsgIndex = finalMessages.length - 1;
       
       if (assistantMsgIndex >= 0 && finalMessages[assistantMsgIndex]?.role === 'assistant') {
+        // Сохраняем признак thinking при завершении
+        const isThinking = finalMessages[assistantMsgIndex].thinking;
+        
         finalMessages[assistantMsgIndex] = {
           ...finalMessages[assistantMsgIndex],
           content: fullResponse || 'Sorry, I couldn\'t generate a response. Please try again.',
           pending: false,
-          thinking: false,
+          thinking: isThinking, // Сохраняем признак "думающей" модели
         };
         
         messagesRef.current = finalMessages;
@@ -158,11 +167,14 @@ export const useStreamProcessor = ({
       const assistantMsgIndex = errorMessages.length - 1;
       
       if (assistantMsgIndex >= 0 && errorMessages[assistantMsgIndex]?.role === 'assistant') {
+        // Сохраняем признак thinking при ошибке
+        const isThinking = errorMessages[assistantMsgIndex].thinking;
+        
         errorMessages[assistantMsgIndex] = {
           ...errorMessages[assistantMsgIndex],
           content: 'Sorry, there was an error processing your request. Please try again.',
           pending: false,
-          thinking: false,
+          thinking: isThinking, // Сохраняем признак "думающей" модели
         };
         
         messagesRef.current = errorMessages;
