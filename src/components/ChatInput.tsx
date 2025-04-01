@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { X } from 'lucide-react';
 import { useChat } from '@/contexts/ChatContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { useToast } from '@/components/ui/use-toast';
