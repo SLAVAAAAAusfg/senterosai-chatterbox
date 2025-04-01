@@ -88,8 +88,6 @@ const Index = () => {
           )}
         </div>
         
-        {/* Removed action buttons (Clear Chat and Regenerate Response) */}
-        
         {/* Input area */}
         <div className="sticky bottom-0 left-0 right-0 pb-4 pt-2 bg-gradient-to-t from-background to-transparent">
           <ChatInput />

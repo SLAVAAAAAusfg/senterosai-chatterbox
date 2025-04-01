@@ -1,7 +1,7 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { CornerDownRight, Bot, User, Brain } from 'lucide-react';
+import { CornerDownRight, Bot, User, Brain, ImageIcon } from 'lucide-react';
 import { Message } from '@/types/chat';
 import { cn } from '@/lib/utils';
 import { useSettings } from '@/contexts/SettingsContext';
@@ -27,6 +27,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, isLastMessage }) => 
   const isEmpty = message.content.trim() === '';
   const isThinking = message.thinking === true;
   const isPending = message.pending === true;
+  const hasThoughtProcess = isThinking && message.thoughtProcess;
 
   useEffect(() => {
     if (isLastMessage && autoScroll && messageRef.current) {
@@ -42,7 +43,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, isLastMessage }) => 
       isEmpty,
       isThinking,
       isPending,
+      hasImage: message.imageUrl ? true : false,
       contentLength: message.content.length,
+      thoughtProcess: message.thoughtProcess ? 'present' : 'none',
       content: message.content.slice(0, 20) + (message.content.length > 20 ? '...' : '')
     });
   }, [message, isEmpty, isThinking, isPending]);
@@ -81,12 +84,40 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, isLastMessage }) => 
                   {getTranslation('thinking', language)}
                 </span>
               )}
+              {message.memory && (
+                <span className="ml-2 text-xs bg-green-500/20 text-green-600 px-2 py-0.5 rounded-full">
+                  Запомнил ✓
+                </span>
+              )}
             </div>
+            
+            {/* Display user's image if present */}
+            {!isAI && message.imageUrl && (
+              <div className="mb-3 relative">
+                <img 
+                  src={message.imageUrl} 
+                  alt="Uploaded" 
+                  className="max-h-56 rounded-lg object-contain" 
+                />
+              </div>
+            )}
+            
+            {/* Thinking content first if available */}
+            {hasThoughtProcess && (
+              <div className="mb-4 thinking-process bg-primary/5 p-3 rounded-md border border-primary/20">
+                <div className="text-xs text-muted-foreground mb-1 flex items-center">
+                  <Brain className="w-3 h-3 mr-1" /> Ход мыслей:
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  <ReactMarkdown>{message.thoughtProcess || ''}</ReactMarkdown>
+                </div>
+              </div>
+            )}
             
             <div className={cn(
               "message-content markdown", 
               isPending ? 'opacity-80' : '',
-              isThinking ? 'thinking-content bg-primary/5 p-3 rounded-md border border-primary/20' : ''
+              isThinking && !hasThoughtProcess ? 'thinking-content bg-primary/5 p-3 rounded-md border border-primary/20' : ''
             )}>
               {isPending && isEmpty ? (
                 <TypingIndicator />

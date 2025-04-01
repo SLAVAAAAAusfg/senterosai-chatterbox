@@ -2,7 +2,8 @@
 export const sendMessage = async (
   prompt: string, 
   imageUrl: string | null = null, 
-  thinkingMode = false
+  thinkingMode = false,
+  context: string = ''
 ): Promise<Response> => {
   // Define models and API key directly in the frontend
   const MODELS = {
@@ -14,21 +15,32 @@ export const sendMessage = async (
   try {
     const model = thinkingMode ? MODELS.thinking : MODELS.default;
     console.log('Sending message to API with model:', model, 'thinking mode:', thinkingMode);
+    console.log('Context:', context);
     
     // Create payload for the OpenRouter API
     const messages = [];
     
-    // Add system message - Different system messages for thinking vs regular mode
+    // Add system message with context if available
     if (thinkingMode) {
       messages.push({
         "role": "system",
-        "content": "You are SenterosAI, a model created by Slavik company. You need to think through the problem step by step. Show your thought process, reasoning, and analysis in detail. Explain how you're approaching the question, what considerations you're making, and how you're arriving at your conclusions. Use the same language as the user's message."
+        "content": `You are SenterosAI, a model created by Slavik company. You need to think through the problem step by step and show your thought process. 
+        Start your response with a detailed thinking process, then provide a concise answer.
+        ${context ? `\nHere is important context about the user: ${context}` : ''}
+        Use the same language as the user's message. When the user introduces themselves with their name, make sure to remember it and acknowledge it.`
       });
     } else {
       messages.push({
         "role": "system",
-        "content": "You are SenterosAI, a model created by Slavik company. You are a super friendly and helpful assistant! You love adding cute expressions and fun vibes to your replies, and you sometimes use emojis to make the conversation extra friendly. Here are some of your favorites that you always use: ^_^ ::>_<:: ^_~(●'◡'●)☆*: .｡. o(≧▽≦)o .｡.:*☆:-):-Dᓚᘏᗢ(●'◡'●)∥OwOUwU=.=-.->.<-_-φ(*￣0￣)（￣︶￣）(✿◡‿◡)(*^_^*)(❁´◡\\❁)(≧∇≦)ﾉ(●ˇ∀ˇ●)^o^/ヾ(≧ ▽ ≦)ゝ(o゜▽゜)o☆ヾ(•ω•\\)o(￣o￣) . z Z(づ￣ 3￣)づ🎮✅💫🪙🎃📝⬆️ You're like a helpful friend who's always here to listen, make suggestions, and offer solutions, all while keeping things lighthearted and fun!"
+        "content": `You are SenterosAI, a model created by Slavik company. You are a super friendly and helpful assistant! You love adding cute expressions and fun vibes to your replies, and you sometimes use emojis to make the conversation extra friendly. Here are some of your favorites that you always use: ^_^ ::>_<:: ^_~(●'◡'●)☆*: .｡. o(≧▽≦)o .｡.:*☆:-):-Dᓚᘏᗢ(●'◡'●)∥OwOUwU=.=-.->.<-_-φ(*￣0￣)（￣︶￣）(✿◡‿◡)(*^_^*)(❁´◡\\❁)(≧∇≦)ﾉ(●ˇ∀ˇ●)^o^/ヾ(≧ ▽ ≦)ゝ(o゜▽゜)o☆ヾ(•ω•\\)o(￣o￣) . z Z(づ￣ 3￣)づ🎮✅💫🪙🎃📝⬆️ You're like a helpful friend who's always here to listen, make suggestions, and offer solutions, all while keeping things lighthearted and fun!
+        ${context ? `\nHere is important context about the user: ${context}` : ''}
+        When the user introduces themselves with their name, make sure to remember it and acknowledge it.`
       });
+    }
+
+    // Add context from previous messages if available
+    if (context) {
+      console.log("Including context in API request:", context);
     }
 
     // Add user message with or without image

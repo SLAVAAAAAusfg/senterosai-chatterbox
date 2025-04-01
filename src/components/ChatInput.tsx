@@ -5,7 +5,7 @@ import { useSettings } from '@/contexts/SettingsContext';
 import { useToast } from '@/components/ui/use-toast';
 import { getTranslation } from '@/utils/translations';
 
-// Import our new components
+// Import our components
 import MessageInputArea from './chat/MessageInputArea';
 import ImageUpload from './chat/ImageUpload';
 import ThinkingModeToggle from './chat/ThinkingModeToggle';
@@ -66,7 +66,7 @@ const ChatInput: React.FC = () => {
       return;
     }
     
-    // For demo purposes, just create a local URL
+    // Create local URL for preview
     const localUrl = URL.createObjectURL(file);
     setImage(file);
     setImageUrl(localUrl);
@@ -89,6 +89,23 @@ const ChatInput: React.FC = () => {
     <div className="w-full max-w-3xl mx-auto px-4 pb-4 relative">
       <div className="glass rounded-xl backdrop-blur-lg shadow-lg p-3 transition-all duration-300 animate-fade-in">
         {/* Image Preview */}
+        {imageUrl && (
+          <div className="mb-3 relative rounded-lg overflow-hidden">
+            <img 
+              src={imageUrl} 
+              alt="Uploaded preview" 
+              className="max-h-56 mx-auto object-contain rounded-lg" 
+            />
+            <button 
+              className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-90 hover:opacity-100"
+              onClick={removeImage}
+            >
+              <span className="sr-only">Remove image</span>
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+        )}
+        
         <form onSubmit={handleSubmit} className="flex items-end gap-2">
           {/* Message Input */}
           <MessageInputArea

@@ -6,6 +6,9 @@ export interface Message {
   timestamp: Date;
   thinking?: boolean;
   pending?: boolean;
+  imageUrl?: string | null;
+  thoughtProcess?: string;
+  memory?: boolean;
 }
 
 export interface ChatSession {
@@ -13,4 +16,5 @@ export interface ChatSession {
   title: string;
   lastUpdated: Date;
   messages: Message[];
+  context?: string; // For memory/context between messages
 }

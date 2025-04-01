@@ -35,17 +35,34 @@ export const useMessageSender = ({
   });
 
   const sendUserMessage = useCallback(async (message: string, imageUrl: string | null = null) => {
-    if (!message.trim()) return;
+    if (!message.trim() && !imageUrl) return;
 
     console.log('Sending message:', message, 'with image:', imageUrl);
     playMessageSentSound();
 
+    // Check for memory pattern in message (someone asking their name)
+    const isAskingForMemory = message.toLowerCase().includes('как меня зовут') || 
+                              message.toLowerCase().includes('моё имя') ||
+                              message.toLowerCase().includes('мое имя');
+
+    // Check if user is introducing themselves
+    const nameMatch = message.match(/меня зовут\s+(\w+)/i) || 
+                      message.match(/я\s+(\w+)/i);
+    
     const userMessage: Message = {
       id: uuidv4(),
       content: message,
       role: 'user',
       timestamp: new Date(),
+      imageUrl: imageUrl,
     };
+
+    // Initialize or update session context if name is being shared
+    let updatedContext = currentSession.context || '';
+    if (nameMatch && nameMatch[1]) {
+      const userName = nameMatch[1];
+      updatedContext = `User name: ${userName}\n${updatedContext}`;
+    }
 
     const pendingAssistantMessage: Message = {
       id: uuidv4(),
@@ -62,6 +79,7 @@ export const useMessageSender = ({
     const updatedSession = {
       ...currentSession,
       messages: updatedMessages,
+      context: updatedContext,
       title: currentSession.title || (updatedMessages.length <= 2 ? message.slice(0, 30) + (message.length > 30 ? '...' : '') : currentSession.title),
     };
     
@@ -70,14 +88,14 @@ export const useMessageSender = ({
 
     try {
       console.log('Calling API to get response');
-      const response = await sendMessage(message, imageUrl, thinkingMode);
+      const response = await sendMessage(message, imageUrl, thinkingMode, updatedContext);
       
       if (!response.ok) {
         throw new Error(`API returned status ${response.status}`);
       }
       
       console.log('Received response from API, processing stream');
-      await processStreamResponse(response);
+      await processStreamResponse(response, nameMatch !== null);
 
     } catch (error) {
       console.error('Error sending message:', error);
