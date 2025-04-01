@@ -126,7 +126,7 @@ const Auth = () => {
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-background">
       <div className="mb-8 text-center">
         <img 
-          src="https://i.ibb.co/QFHLqXGM/logo-removebg-preview-1.png" 
+          src="https://i.ibb.co/xKtY6RXz/Chat-GPT-Image-1-2025-17-16-51.png" 
           alt="SenterosAI Logo" 
           className="w-24 h-24 mx-auto mb-4" 
         />

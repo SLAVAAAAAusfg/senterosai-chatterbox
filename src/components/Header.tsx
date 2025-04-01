@@ -27,7 +27,7 @@ const Header = () => {
         
         <div className="flex items-center">
           <img 
-            src="https://i.ibb.co/QFHLqXGM/logo-removebg-preview-1.png" 
+            src="https://i.ibb.co/xKtY6RXz/Chat-GPT-Image-1-2025-17-16-51.png" 
             alt="SenterosAI Logo" 
             className="h-8 w-8 mr-2" 
           />

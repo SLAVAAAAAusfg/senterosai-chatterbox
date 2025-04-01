@@ -10,7 +10,7 @@ export const sendMessage = async (
     default: "deepseek/deepseek-r1:free",
     thinking: "qwen/qwq-32b:free"
   };
-  const API_KEY = "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";
+  const API_KEY = "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";
   
   try {
     const model = thinkingMode ? MODELS.thinking : MODELS.default;

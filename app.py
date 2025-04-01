@@ -8,7 +8,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-API_KEY = "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"
+API_KEY = "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"
 MODELS = {
     "default": "google/gemini-2.0-flash-001",
     "thinking": "qwen/qwq-32b:free"

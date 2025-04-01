@@ -67,7 +67,7 @@ const Index = () => {
               <div className="glass p-6 rounded-2xl max-w-md mx-auto animation-float">
                 <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
                   <img 
-                    src="https://i.ibb.co/QFHLqXGM/logo-removebg-preview-1.png" 
+                    src="https://i.ibb.co/xKtY6RXz/Chat-GPT-Image-1-2025-17-16-51.png" 
                     alt="SenterosAI Logo" 
                     className="w-12 h-12" 
                   />
