@@ -90,18 +90,18 @@ const ChatInput: React.FC = () => {
       <div className="glass rounded-xl backdrop-blur-lg shadow-lg p-3 transition-all duration-300 animate-fade-in">
         {/* Image Preview */}
         {imageUrl && (
-          <div className="mb-3 relative rounded-lg overflow-hidden">
+          <div className="mb-3 relative rounded-lg overflow-hidden border border-muted">
             <img 
               src={imageUrl} 
               alt="Uploaded preview" 
-              className="max-h-56 mx-auto object-contain rounded-lg" 
+              className="max-h-56 w-full object-contain bg-black/5 rounded-lg" 
             />
             <button 
-              className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-90 hover:opacity-100"
+              className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-90 hover:opacity-100 w-6 h-6 flex items-center justify-center"
               onClick={removeImage}
+              aria-label="Remove image"
             >
-              <span className="sr-only">Remove image</span>
-              <span aria-hidden="true">×</span>
+              <X className="h-4 w-4" />
             </button>
           </div>
         )}

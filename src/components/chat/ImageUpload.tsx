@@ -37,24 +37,6 @@ const ImageUpload = ({
 
   return (
     <>
-      {imageUrl && (
-        <div className="relative mb-3 rounded-lg overflow-hidden">
-          <img 
-            src={imageUrl} 
-            alt="Uploaded" 
-            className="max-h-56 mx-auto object-contain rounded-lg" 
-          />
-          <Button 
-            variant="destructive" 
-            size="icon" 
-            className="absolute top-2 right-2 h-6 w-6 opacity-90" 
-            onClick={onRemoveImage}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-      )}
-      
       <Tooltip>
         <TooltipTrigger asChild>
           <Button 

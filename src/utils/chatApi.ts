@@ -38,11 +38,6 @@ export const sendMessage = async (
       });
     }
 
-    // Add context from previous messages if available
-    if (context) {
-      console.log("Including context in API request:", context);
-    }
-
     // Add user message with or without image
     if (imageUrl) {
       messages.push({

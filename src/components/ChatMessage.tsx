@@ -35,21 +35,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, isLastMessage }) => 
     }
   }, [message.content, isLastMessage, autoScroll]);
 
-  useEffect(() => {
-    // Debug logging for message state
-    console.log('Message state:', {
-      id: message.id,
-      role: message.role,
-      isEmpty,
-      isThinking,
-      isPending,
-      hasImage: message.imageUrl ? true : false,
-      contentLength: message.content.length,
-      thoughtProcess: message.thoughtProcess ? 'present' : 'none',
-      content: message.content.slice(0, 20) + (message.content.length > 20 ? '...' : '')
-    });
-  }, [message, isEmpty, isThinking, isPending]);
-
   return (
     <div 
       ref={messageRef}
@@ -93,11 +78,11 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, isLastMessage }) => 
             
             {/* Display user's image if present */}
             {!isAI && message.imageUrl && (
-              <div className="mb-3 relative">
+              <div className="mb-3 relative rounded-lg overflow-hidden border border-muted max-w-sm">
                 <img 
                   src={message.imageUrl} 
                   alt="Uploaded" 
-                  className="max-h-56 rounded-lg object-contain" 
+                  className="max-h-72 w-full object-contain bg-black/5 rounded-lg" 
                 />
               </div>
             )}
