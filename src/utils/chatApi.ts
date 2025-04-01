@@ -7,8 +7,8 @@ export const sendMessage = async (
 ): Promise<Response> => {
   // Define models and API key directly in the frontend
   const MODELS = {
-    default: "deepseek/deepseek-r1:free",
-    thinking: "qwen/qwq-32b:free"
+    default: "qwen/qwen2.5-vl-32b-instruct:free",
+    thinking: "google/gemini-2.5-pro-exp-03-25:free"
   };
   const API_KEY = "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";
   

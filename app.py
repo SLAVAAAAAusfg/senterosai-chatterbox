@@ -1,4 +1,3 @@
-
 import os
 import json
 import requests
@@ -10,8 +9,8 @@ CORS(app)
 
 API_KEY = "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"
 MODELS = {
-    "default": "google/gemini-2.0-flash-001",
-    "thinking": "qwen/qwq-32b:free"
+    "default": "qwen/qwen2.5-vl-32b-instruct:free",
+    "thinking": "google/gemini-2.5-pro-exp-03-25:free"
 }
 
 def process_content(content):
