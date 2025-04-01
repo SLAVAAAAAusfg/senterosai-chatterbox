@@ -10,7 +10,7 @@ export const sendMessage = async (
     default: "qwen/qwen2.5-vl-32b-instruct:free",
     thinking: "google/gemini-2.5-pro-exp-03-25:free"
   };
-  const API_KEY = "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";
+  const API_KEY = "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";
   
   try {
     const model = thinkingMode ? MODELS.thinking : MODELS.default;
