@@ -5,19 +5,16 @@ export const sendMessage = async (
   thinkingMode = false,
   context: string = ''
 ): Promise<Response> => {
-  // Define models and API key directly in the frontend
-  const MODELS = {
-    default: "qwen/qwen2.5-vl-32b-instruct:free",
-    thinking: "google/gemini-2.5-pro-exp-03-25:free"
-  };
-  const API_KEY = "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";
+  // Define API key directly in the frontend
+  const API_KEY = "sk-PkKWI4b0JeCemhfTYQrgA1b8Z2g5uGV5jeMH47q29IkXNWCHh77MjOtAzKI6IPLa-9Agxr4hXpSjYeHZqHqvdQ";
   
   try {
-    const model = thinkingMode ? MODELS.thinking : MODELS.default;
+    // Select model based on whether image is included
+    const model = imageUrl ? "gpt-4o" : "gpt-4o-mini";
     console.log('Sending message to API with model:', model, 'thinking mode:', thinkingMode);
     console.log('Context:', context);
     
-    // Create payload for the OpenRouter API
+    // Create payload for the Langdock API
     const messages = [];
     
     // Add system message with context if available
@@ -54,12 +51,10 @@ export const sendMessage = async (
       });
     }
 
-    // Define headers for the OpenRouter API
+    // Define headers for the Langdock API
     const headers = {
       "Authorization": `Bearer ${API_KEY}`,
-      "Content-Type": "application/json",
-      "HTTP-Referer": window.location.href,
-      "X-Title": "SenterosAI Chat"
+      "Content-Type": "application/json"
     };
 
     // Create the API request payload
@@ -69,10 +64,10 @@ export const sendMessage = async (
       stream: true
     };
 
-    console.log('Sending payload to OpenRouter:', JSON.stringify(payload));
+    console.log('Sending payload to Langdock:', JSON.stringify(payload));
 
-    // Make the API request directly to OpenRouter
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    // Make the API request to Langdock
+    const response = await fetch("https://api.langdock.com/v1/chat/completions", {
       method: 'POST',
       headers: headers,
       body: JSON.stringify(payload)
