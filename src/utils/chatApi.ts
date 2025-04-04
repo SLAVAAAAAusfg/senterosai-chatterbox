@@ -14,7 +14,7 @@ export const sendMessage = async (
     console.log('Sending message to API with model:', model, 'thinking mode:', thinkingMode);
     console.log('Context:', context);
     
-    // Create payload for the Langdock API
+    // Create payload for the API
     const messages = [];
     
     // Add system message with context if available
@@ -51,7 +51,7 @@ export const sendMessage = async (
       });
     }
 
-    // Define headers for the Langdock API
+    // Define headers for the API
     const headers = {
       "Authorization": `Bearer ${API_KEY}`,
       "Content-Type": "application/json"
@@ -66,8 +66,8 @@ export const sendMessage = async (
 
     console.log('Sending payload to API:', JSON.stringify(payload));
 
-    // Make the API request to Langdock
-    const response = await fetch("https://api.langdock.com/v1/chat/completions", {
+    // Make the API request to the correct endpoint
+    const response = await fetch("https://api.langdock.com/openai/eu/v1/chat/completions", {
       method: 'POST',
       headers: headers,
       body: JSON.stringify(payload)
