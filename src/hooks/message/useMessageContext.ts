@@ -10,5 +10,21 @@ export const useMessageContext = (currentSession: ChatSession) => {
     messagesRef.current = [...currentSession.messages];
   }
 
-  return { messagesRef };
+  // Get a formatted conversation history string for context
+  const getContextString = () => {
+    try {
+      // Get the last 5 messages for context (or fewer if there aren't that many)
+      const contextMessages = messagesRef.current
+        .slice(-5)
+        .map(msg => `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}`)
+        .join('\n');
+      
+      return contextMessages;
+    } catch (e) {
+      console.error('Error generating context string:', e);
+      return '';
+    }
+  };
+
+  return { messagesRef, getContextString };
 };

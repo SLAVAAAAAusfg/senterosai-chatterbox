@@ -5,7 +5,7 @@ export const sendMessage = async (
   thinkingMode = false,
   context: string = ''
 ): Promise<Response> => {
-  // Define API key directly in the frontend
+  // Use the API key provided in your backend code
   const API_KEY = "sk-PkKWI4b0JeCemhfTYQrgA1b8Z2g5uGV5jeMH47q29IkXNWCHh77MjOtAzKI6IPLa-9Agxr4hXpSjYeHZqHqvdQ";
   
   try {
@@ -65,9 +65,21 @@ export const sendMessage = async (
     };
 
     console.log('Sending payload to API:', JSON.stringify(payload));
+    
+    // Try to make a HEAD request first to check if the API is reachable
+    try {
+      const checkResponse = await fetch("https://api.langdock.com/openai/eu/v1/models", {
+        method: 'HEAD',
+        headers: headers
+      });
+      console.log('API connectivity check:', checkResponse.status, checkResponse.statusText);
+    } catch (checkError) {
+      console.warn('API connectivity check failed:', checkError);
+      // Continue with the main request even if this fails
+    }
 
-    // Make the API request to the correct endpoint
-    const response = await fetch("https://api.langdock.com/openai/eu/v1/chat/completions", {
+    // Make the API request - use a direct URL without any region prefix to test
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: 'POST',
       headers: headers,
       body: JSON.stringify(payload)
@@ -77,13 +89,41 @@ export const sendMessage = async (
       console.error('Error response:', response.status, response.statusText);
       const errorText = await response.text();
       console.error('Error body:', errorText);
-      throw new Error(`Failed to send message: ${response.statusText || 'API not available'} (${response.status})`);
+      
+      // Try one more time with the EU endpoint
+      console.log('Retrying with EU endpoint...');
+      const retryResponse = await fetch("https://api.langdock.com/openai/eu/v1/chat/completions", {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(payload)
+      });
+      
+      if (!retryResponse.ok) {
+        console.error('Retry error response:', retryResponse.status, retryResponse.statusText);
+        const retryErrorText = await retryResponse.text();
+        console.error('Retry error body:', retryErrorText);
+        throw new Error(`Failed to send message after retry: ${retryResponse.statusText || 'API not available'} (${retryResponse.status})`);
+      }
+      
+      console.log('Retry successful!');
+      return retryResponse;
     }
     
     console.log('Response status:', response.status, response.statusText);
     return response;
   } catch (error) {
     console.error('Error sending message:', error);
-    throw error;
+    // Create a synthetic error response so the frontend can display something
+    return new Response(JSON.stringify({
+      error: {
+        message: `Error connecting to API: ${error.message || 'Unknown error'}. 
+        Please check your internet connection and try again.`
+      }
+    }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   }
 };
