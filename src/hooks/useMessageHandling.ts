@@ -1,6 +1,5 @@
 
-import { useRef } from 'react';
-import { Message, ChatSession } from '../types/chat';
+import { ChatSession } from '../types/chat';
 import { useChatAudio } from './useChatAudio';
 import { useMessageSender } from './useMessageSender';
 import { useResponseRegenerator } from './useResponseRegenerator';
@@ -18,8 +17,10 @@ export const useMessageHandling = ({
   soundEnabled, 
   thinkingMode 
 }: MessageHandlingProps) => {
+  // Initialize audio hooks
   const { playMessageSentSound, playMessageReceivedSound } = useChatAudio(soundEnabled);
   
+  // Initialize message sender
   const { sendUserMessage, messagesRef } = useMessageSender({
     currentSession,
     updateSession,
@@ -28,6 +29,7 @@ export const useMessageHandling = ({
     playMessageReceivedSound
   });
 
+  // Initialize response regenerator
   const { regenerateResponse } = useResponseRegenerator({
     currentSession,
     updateSession,

@@ -19,6 +19,7 @@ export const useResponseRegenerator = ({
     const messages = [...messagesRef.current];
     let lastUserMessageIndex = -1;
     
+    // Find the last user message
     for (let i = messages.length - 1; i >= 0; i--) {
       if (messages[i].role === 'user') {
         lastUserMessageIndex = i;
@@ -40,7 +41,8 @@ export const useResponseRegenerator = ({
     
     updateSession(updatedSession);
     
-    await sendUserMessage(lastUserMessage.content);
+    // Re-send the last user message to generate a new response
+    await sendUserMessage(lastUserMessage.content, lastUserMessage.imageUrl);
   }, [currentSession, messagesRef, sendUserMessage, updateSession]);
 
   return { regenerateResponse };
