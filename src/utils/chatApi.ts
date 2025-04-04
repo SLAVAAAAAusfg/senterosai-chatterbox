@@ -64,7 +64,7 @@ export const sendMessage = async (
       stream: true
     };
 
-    console.log('Sending payload to Langdock:', JSON.stringify(payload));
+    console.log('Sending payload to API:', JSON.stringify(payload));
 
     // Make the API request to Langdock
     const response = await fetch("https://api.langdock.com/v1/chat/completions", {
@@ -75,7 +75,9 @@ export const sendMessage = async (
     
     if (!response.ok) {
       console.error('Error response:', response.status, response.statusText);
-      throw new Error(`Failed to send message: ${response.statusText || 'API not available'}`);
+      const errorText = await response.text();
+      console.error('Error body:', errorText);
+      throw new Error(`Failed to send message: ${response.statusText || 'API not available'} (${response.status})`);
     }
     
     console.log('Response status:', response.status, response.statusText);
